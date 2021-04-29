@@ -1,0 +1,55 @@
+{% extends "layout.html" %} {% block body %}
+
+<div class="d-flex flex-column justify-content-center">
+    <div class="d-flex justify-content-center">
+        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fraw.githubusercontent.com%2FSerbanBlebea%2Furl-shortener%2Fmaster%2Fimg%2Furl-shortener-logo.png&f=1&nofb=1"
+            style="max-width: 30%; opacity: 0.6; border-radius:150px;">
+    </div>
+
+    <div class="card card-body mt-5"
+        style="border-radius: 20px;">
+
+        {% with nueva_url = get_flashed_messages() %}
+
+        {% if not nueva_url %}
+        <form action="{{ url_for('short_url') }}" method="POST" class="mt-5">
+            <div class="input-group mb-3">
+                <span class="input-group-text" style="border-radius: 10px;">Ingresa la URL</span>
+                <input type="text" class="form-control ms-2" style="border-radius: 10px;"
+                    pattern="^https:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[-a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$"
+                    title="URL no valida" name="url" required />
+                <button class="btn btn-primary ms-2" style="border-radius: 10px;">Short It!</button>
+            </div>
+        </form>
+
+        {% else %}
+        <div class="input-group mb-3">
+            <input type="text" class="form-control ms-2" id="nuevaURL" style="border-radius: 10px;" value="{{nueva_url[0]}}" />
+            <button class="btn btn-outline-info" id="btnCopiarURL" onclick="copiarURL()" type="button"
+                style="border-radius: 10px;">
+                Copiar URL
+            </button>
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+</div>
+
+<script>
+    function copiarURL() {
+        const newURL = document.getElementById('nuevaURL');
+        newURL.select();
+        newURL.setSelectionRange(0, 50);
+        document.execCommand("copy");
+
+        const btnCopiarURL = document.getElementById('btnCopiarURL');
+        btnCopiarURL.innerHTML = `¡URL copiada!`;
+        btnCopiarURL.classList.replace('btn-outline-info', 'btn-info')
+
+        setTimeout(() => {
+            location.replace("{{ url_for('inicio') }}")
+        }, 3000)
+    }
+</script>
+
+{% endblock %}
